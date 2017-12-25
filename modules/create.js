@@ -586,7 +586,7 @@ function pre_certificate_check(container)
 				//	1.	Mark the cert to be valid so we can make future
 				//		decision in the future.
 				//
-				container.cert_already_alid = true;
+				container.cert_already_valid = true;
 			}
 
 			//
@@ -618,7 +618,7 @@ function update_route53_with_cert_validation(container)
 		//		And if this matches, then we display instructions how to
 		//		update the DNS to allow the cert verification.
 		//
-		if(!container.zone_id && !container.cert_already_alid)
+		if(!container.zone_id && !container.cert_already_valid)
 		{
 			term("\n");
 			term("\n");
@@ -636,9 +636,9 @@ function update_route53_with_cert_validation(container)
 		}
 
 		//
-		//	2.	Skip this step if the ARN is found
+		//	2.	Skip this step if the cert is already valid
 		//
-		if(container.cert_arn)
+		if(container.cert_already_valid)
 		{
 			//
 			//	-> Move to the next chain
