@@ -76,7 +76,7 @@ The time frame for this process ranges from 10 seconds to 24 hours. It's complet
 
 This takes up to 15 or 20 minutes, but when you reach this point, you can be certain that the configuration is correct. At this point, you just need to wait until the process is complete. Only then will the domain deliver the website.
 
-# Why "Potato"?
+# Why This Name?
 
 Why not? We had to call it something. And once you see it, you're not going to forget it. 😃
 
