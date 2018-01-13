@@ -9,7 +9,7 @@ The purpose of the Potato CLI tool is to streamline the process when you want to
 # How to Install
 
 ```
-sudo npm install -g 0x4447-potato
+sudo npm install -g @0x4447/potato
 ```
 
 # IAM Programmatic Credentials
