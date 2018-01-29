@@ -12,6 +12,12 @@ The purpose of the Potato CLI tool is to streamline the process when you want to
 sudo npm install -g @0x4447/potato
 ```
 
+# Usage
+
+```
+potato -s PATH_TO_FOLDER
+```
+
 # IAM Programmatic Credentials
 
 To use this CLI, create a programmatic user with the following permissions:
@@ -20,12 +26,6 @@ To use this CLI, create a programmatic user with the following permissions:
 - CloudFrontFullAccess
 - AmazonRoute53FullAccess
 - AWSCertificateManagerFullAccess
-
-# How to Use
-
-```
-potato -s PATH_TO_FOLDER
-```
 
 # What Potato Does
 
