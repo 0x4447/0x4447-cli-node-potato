@@ -1,6 +1,6 @@
 {
   "name": "@0x4447/potato",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "🥔 Upload a static page to AWS S3 while automatically configuring CloudFront.",
   "main": "index.js",
   "scripts": {
