@@ -170,12 +170,12 @@ function uploader(container, callback)
 	//
 	//	1.	Take out a file path from the array
 	//
-	let file = container.files.shift();
+	let path_with_file = container.files.shift();
 
 	//
 	//	2.	Check if we got anything from the previous operation.
 	//
-	if(!file)
+	if(!path_with_file)
 	{
 		//
 		//	->	Exit this function and return to the promise chain
@@ -184,9 +184,10 @@ function uploader(container, callback)
 	}
 
 	//
-	//	3.	Construct the full path to the file so it can be red
+	//	3.	Construct the full path to the file so S3 knows the exact location
+	//		of the file and can read the content of it.
 	//
-	let full_path_file = container.dir + '/' + file
+	let full_path_file = container.dir + '/' + path_with_file
 
 	//
 	//	4.	Figure out the Mime type of the file so we can tell S3
@@ -194,7 +195,7 @@ function uploader(container, callback)
 	//		displayed, if not the site will be downloaded instead of
 	//		displayed.
 	//
-	let mime_type = mime.lookup(full_path_file)
+	let mime_type = mime.lookup(path_with_file);
 
 	//
 	//	5.	If we weren't able to get a mime type then we set a default one
@@ -206,27 +207,51 @@ function uploader(container, callback)
 	}
 
 	//
-	//	6.	Get the name of the file by discarding the format and the path
+	//	6.	Split open the path and get out all the individual elements
 	//
-	let base_name = path.basename(file);
+	let parsed_path = path.parse(path_with_file);
 
 	//
-	//	7.	Tell the progress bar the name of the first item
+	//	7.	Check if the are dealing with a HTML file and remove the format
+	//		from the name
 	//
-	progress_bar.startItem(base_name);
+	if(parsed_path.ext == '.html')
+	{
+		//
+		//	1.	By default we assume that the .html file is in the root
+		//		directory
+		//
+		path_with_file = parsed_path.name;
+
+		//
+		//	2.	Check to see if the .html file is in a directory
+		//
+		if(parsed_path.dir)
+		{
+			//
+			//	1.	Add the full path
+			//
+			path_with_file = parsed_path.dir + "/" + parsed_path.name;
+		}
+	}
 
 	//
-	//	8.	Prepare the options for S3
+	//	8.	Tell the progress bar the name of the first item
+	//
+	progress_bar.startItem(parsed_path.base);
+
+	//
+	//	9.	Prepare the options for S3
 	//
 	let params = {
 		Bucket: container.bucket,
-		Key: file,
+		Key: path_with_file,
 		ContentType: mime_type,
 		Body: fs.createReadStream(full_path_file)
 	};
 
 	//
-	//	9.	Upload the file to S3 as a Stream
+	//	10.	Upload the file to S3 as a Stream
 	//
 	container.s3.upload(params, function(error, data) {
 
@@ -241,7 +266,7 @@ function uploader(container, callback)
 		//
 		//	2.	Tell the progress bar which item is done
 		//
-		progress_bar.itemDone(file);
+		progress_bar.itemDone(parsed_path.base);
 
 		//
 		//	->	Restart the function to see if we can upload another file

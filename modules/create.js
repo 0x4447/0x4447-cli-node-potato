@@ -853,7 +853,7 @@ function check_if_bucket_exists(container)
 		//
 		let params = {
 			Bucket: container.bucket,
-			Key: 'index.html'
+			Key: 'home'
 		};
 
 		//
@@ -950,10 +950,10 @@ function convert_bucket_to_site(container)
 			Bucket: container.bucket,
 			WebsiteConfiguration: {
 				ErrorDocument: {
-					Key: "error.html"
+					Key: "error"
 				},
 				IndexDocument: {
-					Suffix: "index.html"
+					Suffix: "home"
 				}
 			}
 		};
@@ -1129,7 +1129,7 @@ function create_a_distribution(container)
 				CustomErrorResponses: {
 					Quantity: 0
 				},
-				DefaultRootObject: 'index.html',
+				DefaultRootObject: 'home',
 				HttpVersion: 'http2',
 				IsIPV6Enabled: true,
 				PriceClass: 'PriceClass_100',
