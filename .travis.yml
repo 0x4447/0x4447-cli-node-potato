@@ -6,11 +6,11 @@ script:
 - make test
 deploy:
   provider: npm
-  email: hello@gatti.pl
+  email: hello@0x4447.com
   api_key:
     secure: Qz8hmPRxk192HDaaWLO6XYHGOIYEll1reltZ/uS8hffACz9XNz66IzksEo6ne8/YTpSbwHsXT4zaaplonccGHizwVbkNncTyEhQ01gHvFNUnQNgaVsPiBDG1oERdImCkisPw/5adOBe3os0nGKDEihA7W2IiQVYf95EwuK13ihNPGGKEw3pDfqSGeG5l3Iv9cFQVBgLMQCcAXYxmPyaE2KbgGDvbF9+k6p7bgJlFBHhSIgy+TsQSxwXpA3OH86283A1/cPwMJC6dJfDrEUk/v4QjfVSewkF/UEB+IfqKDKRNvK7FJhHlq9+TZ2XNRpWKdBzByDpCBtyDmcjWOqivvccW1br39r8rLsLWuLteREf25W8JFIyEpMUX4CYjjULFf3PSAEzSonDgz86phLNOLPW1d6q5nXKBoq4CK81CQmQ8lh/dr51kbNWFiUena8l+qL1AnqLw0difPLU5osJoIkQzTXCRlj8XZEbctU4cuk+F7pg5bb+7rw5Mv/7qJBMyMxsG7z5Ea5pjk/VUocRbu2sTc/F1m9G1cGP9EUF/airNEBYZf8yndswG66/fXmvsJal8QYkwqsnMgzf1AJl4KMIdcXeQ1yH4hPm7SQVSxJAeWzSfBS1rUaybmxwYXW8Wft93If2vuwnH9TzrTM5relgt8/alF6W4WhRF1quvs7g=
   on:
     tags: false
     branch: master
-    repo: 0x4447/0x4447-node-cli-potato
+    repo: 0x4447/0x4447-cli-node-potato
     node_js: '8'
