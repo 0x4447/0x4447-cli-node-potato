@@ -1,4 +1,4 @@
-# 0x4447 Potato 🥔
+# 🥔 Potato 
 
 The purpose of the Potato CLI tool is to streamline the process when you want to host a static web page on S3 and deliver it using CloudFront.
 
