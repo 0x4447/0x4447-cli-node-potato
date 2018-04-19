@@ -6,6 +6,7 @@ let term = require('terminal-kit').terminal;
 let update = require('./modules/update');
 let create = require('./modules/create');
 let program = require('commander');
+let request = require('request');
 
 //   _____   ______   _______   _______   _____   _   _    _____    _____
 //  / ____| |  ____| |__   __| |__   __| |_   _| | \ | |  / ____|  / ____|
@@ -88,7 +89,8 @@ term.clear();
 //
 let container = {
 	dir: process.cwd() + "/" + process.argv[3],
-	region: 'us-east-1'
+	region: 'us-east-1',
+	ask_for_credentials: false
 };
 
 //
@@ -96,6 +98,10 @@ let container = {
 //
 display_the_welcome_message(container)
 	.then(function(container) {
+
+		return check_for_the_environment(container);
+
+	}).then(function(container) {
 
 		return ask_for_aws_key(container);
 
@@ -172,13 +178,13 @@ function display_the_welcome_message(container)
 		let options = {
 			flashStyle: term.brightWhite,
 			style: term.brightYellow,
-			delay: 10
+			delay: 20
 		}
 
 		//
 		//	2.	The text to be displayed on the screen
 		//
-		let text = "\tStarting S3 Hosting";
+		let text = "\tStarting Potato";
 
 		//
 		//	3.	Draw the text
@@ -196,23 +202,91 @@ function display_the_welcome_message(container)
 }
 
 //
+//	Query the EC2 Instance Metadata to find out if a IAM Role is attached
+//	to the instance, this way we can either ask the user for credentials
+//	or let the SDK use the Role attached to the EC2 Instance
+//
+function check_for_the_environment(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Prepare the request information
+		//
+		let options = {
+			url: 'http://169.254.169.254/latest/meta-data/iam/',
+			timeout: 1000
+		}
+
+		//
+		//	2.	Make the request
+		//
+		request.get(options, function(error, data) {
+
+			//
+			//	1.	We don't check for an error since when you use the
+			//		timeout flag, request will throw an error when the time
+			//		out happens.
+			//
+			//		In this case we just don't want for this check to hang
+			//		forever
+			//
+
+			//
+			//	2.	Check to see if we got something back. If Potato
+			//		is running on a EC2 instance we should get back the
+			//		ROLE_NAME. And if that is the case we know that the
+			//		AWS SDK will pick the credentials from the Role
+			//		attached to the EC2 Instance.
+			//
+			if(data)
+			{
+				if(data.body.length > 0)
+				{
+					container.ask_for_credentials = true
+				}
+			}
+
+			//
+			//	-> Move to the next chain
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
 //	Make sure the Configuration file is actually available in the system
 //
 function ask_for_aws_key(container)
 {
 	return new Promise(function(resolve, reject) {
 
+		//
+		//	1.	Check if we have to ask the for credentials or we can
+		//		use the EC2 Instance role
+		//
+		if(container.ask_for_credentials)
+		{
+			//
+			//	-> Move to the next chain
+			//
+			return resolve(container);
+		}
+
 		term.clear();
 
 		term("\n");
 
 		//
-		//	1.	Ask input from the user
+		//	2.	Ask input from the user
 		//
 		term.yellow("\tPlease paste your AWS Access Key ID: ");
 
 		//
-		//	2.	Listen for the user input
+		//	3.	Listen for the user input
 		//
 		term.inputField({}, function(error, aws_access_key_id) {
 
@@ -241,6 +315,18 @@ function ask_for_aws_key(container)
 function ask_for_aws_secret(container)
 {
 	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Check if we have to ask the for credentials or we can
+		//		use the EC2 Instance role
+		//
+		if(container.ask_for_credentials)
+		{
+			//
+			//	-> Move to the next chain
+			//
+			return resolve(container);
+		}
 
 		term.clear();
 
@@ -284,39 +370,62 @@ function create_aws_objects(container)
 	return new Promise(function(resolve, reject) {
 
 		//
-		//	1.	Create the AWS S3 object
+		//	1.	Create basic settings for the constructor
 		//
-		container.s3 = new aws.S3({
-			region: container.region,
-			accessKeyId: container.aws_access_key_id,
-			secretAccessKey: container.aws_secret_access_key
-		});
+		let s3 = {
+			region: container.region
+		}
+
+		let cloudfront = {
+			region: container.region
+		}
+
+		let route53 = {
+			region: container.region
+		}
+
+		let acm = {
+			region: container.region
+		}
 
 		//
-		//	2.	Create the AWS CloudFront object
+		//	2.	Update constructor settings if the user had to past the
+		//		credentials
 		//
-		container.cloudfront = new aws.CloudFront({
-			region: container.region,
-			accessKeyId: container.aws_access_key_id,
-			secretAccessKey: container.aws_secret_access_key
-		});
+		if(!container.ask_for_credentials)
+		{
+			s3.accessKeyId = container.aws_access_key_id
+			s3.secretAccessKey = container.aws_secret_access_key
+
+			cloudfront.accessKeyId = container.aws_access_key_id
+			cloudfront.secretAccessKey = container.aws_secret_access_key
+
+			route53.accessKeyId = container.aws_access_key_id
+			route53.secretAccessKey = container.aws_secret_access_key
+
+			acm.accessKeyId = container.aws_access_key_id
+			acm.secretAccessKey = container.aws_secret_access_key
+		}
 
 		//
-		//	3.	Create the AWS Route 53 object
+		//	3.	Create the AWS S3 object
 		//
-		container.route53 = new aws.Route53({
-			accessKeyId: container.aws_access_key_id,
-			secretAccessKey: container.aws_secret_access_key
-		});
+		container.s3 = new aws.S3(s3);
 
 		//
-		//	4. Create the AWS Certificate Manager object
+		//	4.	Create the AWS CloudFront object
 		//
-		container.acm = new aws.ACM({
-			region: container.region,
-			accessKeyId: container.aws_access_key_id,
-			secretAccessKey: container.aws_secret_access_key
-		});
+		container.cloudfront = new aws.CloudFront(cloudfront);
+
+		//
+		//	5.	Create the AWS Route 53 object
+		//
+		container.route53 = new aws.Route53(route53);
+
+		//
+		//	6. Create the AWS Certificate Manager object
+		//
+		container.acm = new aws.ACM(acm);
 
 		//
 		//	-> Move to the next chain

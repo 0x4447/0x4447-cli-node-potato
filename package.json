@@ -32,11 +32,11 @@
   },
   "license": "MIT",
   "dependencies": {
-    "mocha": "4.1.0",
     "aws-sdk": "2.162.0",
     "commander": "2.11.0",
     "fs-readdir-recursive": "1.1.0",
     "mime-types": "2.1.17",
+    "mocha": "4.1.0",
     "read-dir-files": "0.1.1",
     "request": "2.81.0",
     "terminal-kit": "1.13.10"
