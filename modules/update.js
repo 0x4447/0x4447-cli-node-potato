@@ -59,7 +59,19 @@ function get_s3_buckets(container)
 	return new Promise(function(resolve, reject) {
 
 		//
-		//	1.	List all buckets
+		//	1.	Skip this view if the information was already passed in the
+		//		CLI
+		//
+		if(container.bucket)
+		{
+			//
+			//	->	Move to the next chain
+			//
+			return resolve(container);
+		}
+
+		//
+		//	2.	List all buckets
 		//
 		container.s3.listBuckets(function(error, data) {
 
@@ -109,6 +121,18 @@ function pick_a_bucket(container)
 {
 	return new Promise(function(resolve, reject) {
 
+		//
+		//	1.	Skip this view if the information was already passed in the
+		//		CLI
+		//
+		if(container.bucket)
+		{
+			//
+			//	->	Move to the next chain
+			//
+			return resolve(container);
+		}
+
 		term.clear();
 
 		term("\n");
@@ -118,7 +142,7 @@ function pick_a_bucket(container)
 		term('\n');
 
 		//
-		//	1.	Draw the menu with one tab to the left to so the UI stay
+		//	2.	Draw the menu with one tab to the left to so the UI stay
 		//		consistent
 		//
 		let options = {
@@ -126,7 +150,7 @@ function pick_a_bucket(container)
 		}
 
 		//
-		//	2.	Draw the drop down menu
+		//	3.	Draw the drop down menu
 		//
 		term.singleColumnMenu(container.buckets, options, function(error, res) {
 

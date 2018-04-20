@@ -22,6 +22,10 @@ let request = require('request');
 program
 	.version(npm.version)
 	.option('-s, --source', 'path to the folder to upload')
+	.option('-u, --update', 'perform an update')
+	.option('-c, --create', 'create a new site')
+	.option('-b, --bucket', 'S3 bucket name')
+	.option('-d, --domain', 'domain of the site')
 	.parse(process.argv);
 
 //
@@ -96,8 +100,12 @@ let container = {
 //
 //	Start the chain
 //
-display_the_welcome_message(container)
+save_cli_data(container)
 	.then(function(container) {
+
+		return display_the_welcome_message(container);
+
+	}).then(function(container) {
 
 		return check_for_the_environment(container);
 
@@ -163,6 +171,52 @@ display_the_welcome_message(container)
 //
 
 //
+//	Check what type of information was passed and save it so we can skip
+//	some menu actions and run the command programmatically
+//
+function save_cli_data(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Check if one of the options is enabled
+		//
+		if(program.create || program.update)
+		{
+			//
+			//	1.	By default assume always that we are dealing with
+			//		an update.
+			//
+			container.selection = 'Update';
+
+			//
+			//	2.	Check if we need to change opinion.
+			//
+			if(program.create)
+			{
+				container.selection = 'Create';
+			}
+		}
+
+		//
+		//	2.	Check if the bucket name was passed.
+		//
+		if(program.bucket)
+		{
+			container.bucket = program.args[1];
+		}
+
+		//
+		//	->	Move to the next promise
+		//
+		return resolve(container);
+
+	});
+
+
+}
+
+//
 //	Draw on the screen a nice welcome message to show our user how
 //	cool we are :)
 //
@@ -170,10 +224,22 @@ function display_the_welcome_message(container)
 {
 	return new Promise(function(resolve, reject) {
 
+		//
+		//	1.	Don't display the welcome message if we are dealing with the
+		//		CLI
+		//
+		if(program.create || program.update)
+		{
+			//
+			//	->	Move to the next promise
+			//
+			return resolve(container);
+		}
+
 		term("\n");
 
 		//
-		//	1.	Set the options that will draw the banner
+		//	2.	Set the options that will draw the banner
 		//
 		let options = {
 			flashStyle: term.brightWhite,
@@ -182,12 +248,12 @@ function display_the_welcome_message(container)
 		}
 
 		//
-		//	2.	The text to be displayed on the screen
+		//	3.	The text to be displayed on the screen
 		//
 		let text = "\tStarting Potato";
 
 		//
-		//	3.	Draw the text
+		//	4.	Draw the text
 		//
 		term.slowTyping(text, options, function() {
 
@@ -442,6 +508,18 @@ function ask_what_to_do(container)
 {
 	return new Promise(function(resolve, reject) {
 
+		//
+		//	1.	Skip this view if the information was already passed in the
+		//		CLI
+		//
+		if(container.selection)
+		{
+			//
+			//	->	Move to the next chain
+			//
+			return resolve(container);
+		}
+
 		term.clear();
 
 		term("\n");
@@ -451,14 +529,14 @@ function ask_what_to_do(container)
 		term('\n');
 
 		//
-		//	1.	Default settings how to draw the ASCII menu
+		//	2.	Default settings how to draw the ASCII menu
 		//
 		let options = {
 			leftPadding: "\t"
 		};
 
 		//
-		//	2.	The two options to show the user
+		//	3.	The two options to show the user
 		//
 		let question = [
 			'Update',
@@ -466,7 +544,7 @@ function ask_what_to_do(container)
 		];
 
 		//
-		//	3.	Draw the drop down menu
+		//	4.	Draw the drop down menu
 		//
 		term.singleColumnMenu(question, options, function(error, res) {
 

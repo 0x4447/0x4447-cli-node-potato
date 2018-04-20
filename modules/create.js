@@ -18,6 +18,10 @@ module.exports = function(container) {
 		ask_for_the_domain(container)
 			.then(function(container) {
 
+				return get_root_domain(container);
+
+			}).then(function(container) {
+
 				return list_all_certificates(container);
 
 			}).then(function(container) {
@@ -124,6 +128,18 @@ function ask_for_the_domain(container)
 {
 	return new Promise(function(resolve, reject) {
 
+		//
+		//	1.	Skip this view if the information was already passed in the
+		//		CLI
+		//
+		if(container.bucket)
+		{
+			//
+			//	-> Move to the next promise
+			//
+			return resolve(container);
+		}
+
 		term.clear();
 
 		term("\n");
@@ -142,24 +158,39 @@ function ask_for_the_domain(container)
 			container.bucket = dns;
 
 			//
-			//	2.	Save the URL while getting the base domain, for example:
-			//
-			//		subdomain.0x4447.com
-			//
-			//		becomes
-			//
-			//		0x4447.com
-			//
-			//		No matter how deep the sobdomain goes.
-			//
-			container.domain = dns.split('.').slice(-2).join('.');
-
-			//
 			//	-> Move to the next chain
 			//
 			return resolve(container);
 
 		});
+
+	});
+}
+
+//
+//	Get the root domain from the DNS address
+//
+function get_root_domain(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	2.	Save the URL while getting the base domain, for example:
+		//
+		//		subdomain.0x4447.com
+		//
+		//		becomes
+		//
+		//		0x4447.com
+		//
+		//		No matter how deep the subdomain goes.
+		//
+		container.domain = container.bucket.split('.').slice(-2).join('.');
+
+		//
+		//	-> Move to the next chain
+		//
+		return resolve(container);
 
 	});
 }
