@@ -21,11 +21,13 @@ let request = require('request');
 //
 program
 	.version(npm.version)
-	.option('-s, --source', 'path to the folder to upload')
-	.option('-u, --update', 'perform an update')
-	.option('-c, --create', 'create a new site')
-	.option('-b, --bucket', 'S3 bucket name')
-	.option('-d, --domain', 'domain of the site')
+	.option('-s, --source [type]', 		'path to the folder to upload')
+	.option('-u, --update', 			'perform an update')
+	.option('-c, --create', 			'create a new site')
+	.option('-b, --bucket [type]', 		'S3 bucket name')
+	.option('-d, --domain [type]', 		'domain of the site')
+	.option('-a, --access_key [type]', 	'The Access Key of your AWS Account')
+	.option('-t, --secret_key [type]', 	'The Secret Access Key of your AWS Account')
 	.parse(process.argv);
 
 //
@@ -92,22 +94,22 @@ term.clear();
 //	all the data and keep it in one place
 //
 let container = {
-	dir: process.cwd() + "/" + process.argv[3],
+	dir: process.cwd() + "/" + program.source,
 	region: 'us-east-1',
-	ask_for_credentials: false
+	ask_for_credentials: true
 };
 
 //
 //	Start the chain
 //
-save_cli_data(container)
+check_for_the_environment(container)
 	.then(function(container) {
 
-		return display_the_welcome_message(container);
+		return save_cli_data(container);
 
 	}).then(function(container) {
 
-		return check_for_the_environment(container);
+		return display_the_welcome_message(container);
 
 	}).then(function(container) {
 
@@ -171,6 +173,62 @@ save_cli_data(container)
 //
 
 //
+//	Query the EC2 Instance Metadata to find out if a IAM Role is attached
+//	to the instance, this way we can either ask the user for credentials
+//	or let the SDK use the Role attached to the EC2 Instance
+//
+function check_for_the_environment(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Prepare the request information
+		//
+		let options = {
+			url: 'http://169.254.169.254/latest/meta-data/iam/',
+			timeout: 1000
+		}
+
+		//
+		//	2.	Make the request
+		//
+		request.get(options, function(error, data) {
+
+			//
+			//	1.	We don't check for an error since when you use the
+			//		timeout flag, request will throw an error when the time
+			//		out happens.
+			//
+			//		In this case we just don't want for this check to hang
+			//		forever
+			//
+
+			//
+			//	2.	Check to see if we got something back. If Potato
+			//		is running on a EC2 instance we should get back the
+			//		ROLE_NAME. And if that is the case we know that the
+			//		AWS SDK will pick the credentials from the Role
+			//		attached to the EC2 Instance.
+			//
+			if(data)
+			{
+				if(data.body.length > 0)
+				{
+					container.ask_for_credentials = false
+				}
+			}
+
+			//
+			//	-> Move to the next chain
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
 //	Check what type of information was passed and save it so we can skip
 //	some menu actions and run the command programmatically
 //
@@ -203,7 +261,25 @@ function save_cli_data(container)
 		//
 		if(program.bucket)
 		{
-			container.bucket = program.args[1];
+			container.bucket = program.bucket;
+		}
+
+		//
+		//	3.	Check if the user passed the credentials in the CLI
+		//
+		if(program.access_key && program.secret_key)
+		{
+			//
+			//	1.	Save the credentials passed in the CLI
+			//
+			container.aws_access_key_id 		= program.access_key;
+			container.aws_secret_access_key 	= program.secret_key;
+
+			//
+			//	2.	Mark this run not to ask the user for the credentials
+			//		since the information was passed in the CLI.
+			//
+			container.ask_for_credentials = false;
 		}
 
 		//
@@ -268,62 +344,6 @@ function display_the_welcome_message(container)
 }
 
 //
-//	Query the EC2 Instance Metadata to find out if a IAM Role is attached
-//	to the instance, this way we can either ask the user for credentials
-//	or let the SDK use the Role attached to the EC2 Instance
-//
-function check_for_the_environment(container)
-{
-	return new Promise(function(resolve, reject) {
-
-		//
-		//	1.	Prepare the request information
-		//
-		let options = {
-			url: 'http://169.254.169.254/latest/meta-data/iam/',
-			timeout: 1000
-		}
-
-		//
-		//	2.	Make the request
-		//
-		request.get(options, function(error, data) {
-
-			//
-			//	1.	We don't check for an error since when you use the
-			//		timeout flag, request will throw an error when the time
-			//		out happens.
-			//
-			//		In this case we just don't want for this check to hang
-			//		forever
-			//
-
-			//
-			//	2.	Check to see if we got something back. If Potato
-			//		is running on a EC2 instance we should get back the
-			//		ROLE_NAME. And if that is the case we know that the
-			//		AWS SDK will pick the credentials from the Role
-			//		attached to the EC2 Instance.
-			//
-			if(data)
-			{
-				if(data.body.length > 0)
-				{
-					container.ask_for_credentials = true
-				}
-			}
-
-			//
-			//	-> Move to the next chain
-			//
-			return resolve(container);
-
-		});
-
-	});
-}
-
-//
 //	Make sure the Configuration file is actually available in the system
 //
 function ask_for_aws_key(container)
@@ -331,10 +351,9 @@ function ask_for_aws_key(container)
 	return new Promise(function(resolve, reject) {
 
 		//
-		//	1.	Check if we have to ask the for credentials or we can
-		//		use the EC2 Instance role
+		//	1.	Check if we have to ask the for credentials
 		//
-		if(container.ask_for_credentials)
+		if(!container.ask_for_credentials)
 		{
 			//
 			//	-> Move to the next chain
@@ -383,10 +402,9 @@ function ask_for_aws_secret(container)
 	return new Promise(function(resolve, reject) {
 
 		//
-		//	1.	Check if we have to ask the for credentials or we can
-		//		use the EC2 Instance role
+		//	1.	Check if we have to ask the for credentials
 		//
-		if(container.ask_for_credentials)
+		if(!container.ask_for_credentials)
 		{
 			//
 			//	-> Move to the next chain
@@ -458,7 +476,7 @@ function create_aws_objects(container)
 		//	2.	Update constructor settings if the user had to past the
 		//		credentials
 		//
-		if(!container.ask_for_credentials)
+		if(container.ask_for_credentials)
 		{
 			s3.accessKeyId = container.aws_access_key_id
 			s3.secretAccessKey = container.aws_secret_access_key

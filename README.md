@@ -18,9 +18,15 @@ sudo npm install -g @0x4447/potato
 potato -s PATH_TO_FOLDER
 ```
 
-# IAM Programmatic Credentials
+# Help
 
-To use this CLI, create a programmatic user with the following permissions:
+```
+potato -h
+```
+
+# Credentials
+
+To use this CLI, create a programmatic user or create a role with the following permissions:
 
 - AmazonS3FullAccess
 - CloudFrontFullAccess
