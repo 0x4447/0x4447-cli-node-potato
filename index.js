@@ -256,7 +256,7 @@ function check_for_codebuild_role(container)
 		//
 		request.get(options, function(error, data) {
 
-			console.log(data);
+			console.log(data.body);
 
 			//
 			//	1.	We don't check for an error since when you use the
@@ -267,6 +267,8 @@ function check_for_codebuild_role(container)
 			//		forever
 			//
 
+			let body = JSON.parse(data.body);
+
 			//
 			//	2.	Check to see if we got something back. If Potato
 			//		is running on a EC2 instance we should get back the
@@ -274,7 +276,7 @@ function check_for_codebuild_role(container)
 			//		AWS SDK will pick the credentials from the Role
 			//		attached to the EC2 Instance.
 			//
-			if(data.RoleArn.length)
+			if(body.RoleArn)
 			{
 				container.ask_for_credentials = false
 			}
