@@ -233,8 +233,8 @@ function check_for_ec2_role(container)
 }
 
 //
-//	Query the EC2 Instance Metadata to find out if a IAM Role is attached
-//	to the instance, this way we can either ask the user for credentials
+//	Query the CodeBuild Docker Containerto find out if a IAM Role is attached
+//	to the container, this way we can either ask the user for credentials
 //	or let the SDK use the Role attached to the EC2 Instance
 //
 function check_for_codebuild_role(container)
