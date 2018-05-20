@@ -247,7 +247,7 @@ function check_for_codebuild_role(container)
 		//	1.	Prepare the request information
 		//
 		let options = {
-			url: 'http://169.254.169.254' + process.env.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI,
+			url: 'http://169.254.170.2' + process.env.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI,
 			timeout: 1000
 		}
 
