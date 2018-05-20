@@ -102,8 +102,12 @@ let container = {
 //
 //	Start the chain
 //
-check_for_the_environment(container)
+check_for_ec2_role(container)
 	.then(function(container) {
+
+		return check_for_codebuild_role(container);
+
+	}).then(function(container) {
 
 		return save_cli_data(container);
 
@@ -160,7 +164,7 @@ check_for_the_environment(container)
 		//
 		//	->	Exit the app
 		//
-		process.exit();
+		process.exit(-1);
 
 	});
 
@@ -177,7 +181,7 @@ check_for_the_environment(container)
 //	to the instance, this way we can either ask the user for credentials
 //	or let the SDK use the Role attached to the EC2 Instance
 //
-function check_for_the_environment(container)
+function check_for_ec2_role(container)
 {
 	return new Promise(function(resolve, reject) {
 
@@ -216,6 +220,64 @@ function check_for_the_environment(container)
 				{
 					container.ask_for_credentials = false
 				}
+			}
+
+			//
+			//	-> Move to the next chain
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	Query the CodeBuild Docker Containerto find out if a IAM Role is attached
+//	to the container, this way we can either ask the user for credentials
+//	or let the SDK use the Role attached to the EC2 Instance
+//
+function check_for_codebuild_role(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Prepare the request information
+		//
+		let options = {
+			url: 'http://169.254.170.2' + process.env.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI,
+			timeout: 1000
+		}
+
+		//
+		//	2.	Make the request
+		//
+		request.get(options, function(error, data) {
+
+			//
+			//	1.	We don't check for an error since when you use the
+			//		timeout flag, request will throw an error when the time
+			//		out happens.
+			//
+			//		In this case we just don't want for this check to hang
+			//		forever
+			//
+
+			//
+			//	2.	Convert JSON to a JS Object
+			//
+			let body = JSON.parse(data.body);
+
+			//
+			//	3.	Check to see if we got something back. If Potato
+			//		is running inside a container in CodeBuild we should get
+			//		back the RoleArn. And if that is the case we know that the
+			//		AWS SDK will pick the credentials from the Role
+			//		attached to CodeBuild Instance.
+			//
+			if(body.RoleArn)
+			{
+				container.ask_for_credentials = false
 			}
 
 			//
