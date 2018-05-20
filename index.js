@@ -164,7 +164,7 @@ check_for_ec2_role(container)
 		//
 		//	->	Exit the app
 		//
-		process.exit();
+		process.exit(-1);
 
 	});
 
