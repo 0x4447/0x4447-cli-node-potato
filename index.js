@@ -84,6 +84,8 @@ if(!program.source)
 //	|_|  |_| /_/    \_\ |_____| |_| \_|
 //
 
+console.log(process.env);
+
 //
 //	Before we start working, we clean the terminal window
 //
@@ -102,8 +104,12 @@ let container = {
 //
 //	Start the chain
 //
-check_for_the_environment(container)
+check_for_ec2_role(container)
 	.then(function(container) {
+
+		return check_for_codebuild_role(container);
+
+	}).then(function(container) {
 
 		return save_cli_data(container);
 
@@ -177,7 +183,7 @@ check_for_the_environment(container)
 //	to the instance, this way we can either ask the user for credentials
 //	or let the SDK use the Role attached to the EC2 Instance
 //
-function check_for_the_environment(container)
+function check_for_ec2_role(container)
 {
 	return new Promise(function(resolve, reject) {
 
@@ -216,6 +222,61 @@ function check_for_the_environment(container)
 				{
 					container.ask_for_credentials = false
 				}
+			}
+
+			//
+			//	-> Move to the next chain
+			//
+			return resolve(container);
+
+		});
+
+	});
+}
+
+//
+//	Query the EC2 Instance Metadata to find out if a IAM Role is attached
+//	to the instance, this way we can either ask the user for credentials
+//	or let the SDK use the Role attached to the EC2 Instance
+//
+function check_for_codebuild_role(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	Prepare the request information
+		//
+		let options = {
+			url: 'http://169.254.169.254' + process.env.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI,
+			timeout: 1000
+		}
+
+		//
+		//	2.	Make the request
+		//
+		request.get(options, function(error, data) {
+
+			console.log(data);
+
+			//
+			//	1.	We don't check for an error since when you use the
+			//		timeout flag, request will throw an error when the time
+			//		out happens.
+			//
+			//		In this case we just don't want for this check to hang
+			//		forever
+			//
+
+			//
+			//	2.	Check to see if we got something back. If Potato
+			//		is running on a EC2 instance we should get back the
+			//		ROLE_NAME. And if that is the case we know that the
+			//		AWS SDK will pick the credentials from the Role
+			//		attached to the EC2 Instance.
+			//
+			if(data.RoleArn.length)
+			{
+				container.ask_for_credentials = false
 			}
 
 			//
