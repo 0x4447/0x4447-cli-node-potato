@@ -254,8 +254,6 @@ function check_for_codebuild_role(container)
 		//
 		request.get(options, function(error, data) {
 
-			console.log(data.body);
-
 			//
 			//	1.	We don't check for an error since when you use the
 			//		timeout flag, request will throw an error when the time
@@ -265,14 +263,17 @@ function check_for_codebuild_role(container)
 			//		forever
 			//
 
+			//
+			//	2.	Convert JSON to a JS Object
+			//
 			let body = JSON.parse(data.body);
 
 			//
-			//	2.	Check to see if we got something back. If Potato
-			//		is running on a EC2 instance we should get back the
-			//		ROLE_NAME. And if that is the case we know that the
+			//	3.	Check to see if we got something back. If Potato
+			//		is running inside a container in CodeBuild we should get
+			//		back the RoleArn. And if that is the case we know that the
 			//		AWS SDK will pick the credentials from the Role
-			//		attached to the EC2 Instance.
+			//		attached to CodeBuild Instance.
 			//
 			if(body.RoleArn)
 			{
