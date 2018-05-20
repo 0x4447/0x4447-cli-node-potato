@@ -84,8 +84,6 @@ if(!program.source)
 //	|_|  |_| /_/    \_\ |_____| |_| \_|
 //
 
-console.log(process.env);
-
 //
 //	Before we start working, we clean the terminal window
 //
