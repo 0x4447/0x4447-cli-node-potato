@@ -12,7 +12,7 @@ The purpose of the Potato CLI tool is to streamline the process when you want to
 sudo npm install -g @0x4447/potato
 ```
 
-# How to Usage
+# How to Use
 
 ```
 potato -s PATH_TO_FOLDER
