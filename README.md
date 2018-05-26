@@ -1,4 +1,4 @@
-# 🥔 Potato 
+# 🥔 Potato
 
 The purpose of the Potato CLI tool is to streamline the process when you want to host a static web page on S3 and deliver it using CloudFront.
 
@@ -12,13 +12,13 @@ The purpose of the Potato CLI tool is to streamline the process when you want to
 sudo npm install -g @0x4447/potato
 ```
 
-# Usage
+# How to Usage
 
 ```
 potato -s PATH_TO_FOLDER
 ```
 
-# Help
+# Where to get Help
 
 ```
 potato -h
