@@ -264,20 +264,33 @@ function check_for_codebuild_role(container)
 			//
 
 			//
-			//	2.	Convert JSON to a JS Object
-			//
-			let body = JSON.parse(data.body);
-
-			//
-			//	3.	Check to see if we got something back. If Potato
-			//		is running inside a container in CodeBuild we should get
-			//		back the RoleArn. And if that is the case we know that the
+			//	2.	Check to see if we got something back. If Potato
+			//		is running on a EC2 instance we should get back the
+			//		ROLE_NAME. And if that is the case we know that the
 			//		AWS SDK will pick the credentials from the Role
-			//		attached to CodeBuild Instance.
+			//		attached to the EC2 Instance.
 			//
-			if(body.RoleArn)
+			if(data)
 			{
-				container.ask_for_credentials = false
+				if(data.body.length > 0)
+				{
+					//
+					//	1.	Convert JSON to a JS Object
+					//
+					let body = JSON.parse(data.body);
+
+					//
+					//	2.	Check to see if we got something back. If Potato
+					//		is running inside a container in CodeBuild we should get
+					//		back the RoleArn. And if that is the case we know that the
+					//		AWS SDK will pick the credentials from the Role
+					//		attached to CodeBuild Instance.
+					//
+					if(body.RoleArn)
+					{
+						container.ask_for_credentials = false
+					}
+				}
 			}
 
 			//
