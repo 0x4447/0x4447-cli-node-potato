@@ -84,8 +84,8 @@ This takes up to 15 or 20 minutes, but when you reach this point, you can be cer
 
 # The End
 
-If you enjoyed this article/project, please consider giving it a 🌟. And check out our [0x4447 GitHub account](https://github.com/0x4447), where we have additional articles and tools that you might find interesting.
+If you enjoyed this project, please consider giving it a 🌟. And check out our [0x4447 GitHub account](https://github.com/0x4447), where we have additional resources that you might find useful or interesting.
 
 # For Hire 👨‍💻 👩‍💻
 
-If you'd like us to help you with something, please feel free to say [hello@0x4447.email](hello@0x4447.email), and share what's on your mind. We'll take a look, and try our best to help you. Or visit our website at: [0x4447.com](https://0x4447.com).
+If you'd like us to help you with something, please feel free to say [hello@0x4447.email](mailto:hello@0x4447.email), and share what's on your mind. We'll take a look, and try our best to help you. Or visit our website at: [0x4447.com](https://0x4447.com).
