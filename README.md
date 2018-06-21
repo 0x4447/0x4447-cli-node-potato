@@ -9,22 +9,22 @@ The purpose of the Potato CLI tool is to streamline the process when you want to
 # How to Install
 
 ```
-sudo npm install -g @0x4447/potato
+] sudo npm install -g @0x4447/potato
 ```
 
 # How to Use
 
 ```
-potato -s PATH_TO_FOLDER
+] potato -s PATH_TO_FOLDER
 ```
 
 # Where to get Help
 
 ```
-potato -h
+] potato -h
 ```
 
-# What to expect
+# What to Expect
 
 With this CLI, you have the following options:
 
@@ -82,14 +82,10 @@ The time frame for this process ranges from 10 seconds to 24 hours. It's complet
 
 This takes up to 15 or 20 minutes, but when you reach this point, you can be certain that the configuration is correct. At this point, you just need to wait until the process is complete. Only then will the domain deliver the website.
 
-# Why This Name?
-
-Why not? We had to call it something. And once you see it, you're not going to forget it. 😃
-
 # The End
 
 If you enjoyed this article/project, please consider giving it a 🌟. And check out our [0x4447 GitHub account](https://github.com/0x4447), where we have additional articles and tools that you might find interesting.
 
 # For Hire 👨‍💻 👩‍💻
 
-If you'd like us to help you with something, please feel free to say hello@0x4447.email, and share what's on your mind. We'll take a look, and try our best to help you. Or visit our website at: [0x4447.com](https://0x4447.com).
+If you'd like us to help you with something, please feel free to say [hello@0x4447.email](hello@0x4447.email), and share what's on your mind. We'll take a look, and try our best to help you. Or visit our website at: [0x4447.com](https://0x4447.com).
