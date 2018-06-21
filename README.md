@@ -24,16 +24,7 @@ potato -s PATH_TO_FOLDER
 potato -h
 ```
 
-# Credentials
-
-To use this CLI, create a programmatic user or create a role with the following permissions:
-
-- AmazonS3FullAccess
-- CloudFrontFullAccess
-- AmazonRoute53FullAccess
-- AWSCertificateManagerFullAccess
-
-# What Potato Does
+# What to expect
 
 With this CLI, you have the following options:
 
@@ -67,6 +58,15 @@ This process is more involved, but it will save your sanity, as well as quite a 
 
 **WARNING**: What if the certificate takes too long to validate? After 30 seconds, the app will quit and print out a detailed explanation of what your next steps are. Take the time to thoroughly go over the printout, and you'll be good.
 
+# Credentials
+
+To use this CLI, create a programmatic user or create a role with the following permissions:
+
+- AmazonS3FullAccess
+- CloudFrontFullAccess
+- AmazonRoute53FullAccess
+- AWSCertificateManagerFullAccess
+
 # Is Deployment Instant?
 
 No, it's not. The following aspects don't happen right away:
@@ -92,4 +92,4 @@ If you enjoyed this article/project, please consider giving it a 🌟. And check
 
 # For Hire 👨‍💻 👩‍💻
 
-If you'd like us to help you with something, please feel free to say hello@0x4447.com, and share what's on your mind. We'll take a look, and try our best to help you. Or visit our website at: [0x4447.com](https://0x4447.com).
+If you'd like us to help you with something, please feel free to say hello@0x4447.email, and share what's on your mind. We'll take a look, and try our best to help you. Or visit our website at: [0x4447.com](https://0x4447.com).
