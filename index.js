@@ -27,8 +27,7 @@ program
 	.option('-b, --bucket [type]', 		'S3 bucket name')
 	.option('-d, --domain [type]', 		'domain of the site')
 	.option('-a, --access_key [type]', 	'The Access Key of your AWS Account')
-	.option('-t, --secret_key [type]', 	'The Secret Access Key of your AWS Account')
-	.parse(process.argv);
+	.option('-t, --secret_key [type]', 	'The Secret Access Key of your AWS Account');
 
 //
 //	React when the user needs help
