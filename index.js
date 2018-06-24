@@ -137,8 +137,9 @@ check_for_ec2_role(container)
 
 	}).then(function(container) {
 
-		term("\n");
-		term("\n");
+		term("\n\n");
+		term("\tDone!");
+		term("\n\n");
 
 		//
 		//	->	Exit the app
