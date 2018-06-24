@@ -101,7 +101,8 @@ term.clear();
 let container = {
 	dir: process.cwd() + "/" + program.source,
 	region: 'us-east-1',
-	ask_for_credentials: true
+	ask_for_credentials: true,
+	got_cli_credentials: false
 };
 
 //
@@ -361,6 +362,12 @@ function save_cli_data(container)
 			//		since the information was passed in the CLI.
 			//
 			container.ask_for_credentials = false;
+
+			//
+			//	3.	Let the rest of the chain know that we got the credentials
+			//		from the CLI itself.
+			//
+			container.got_cli_credentials = true;
 		}
 
 		//
@@ -557,7 +564,7 @@ function create_aws_objects(container)
 		//	2.	Update constructor settings if the user had to past the
 		//		credentials
 		//
-		if(container.ask_for_credentials)
+		if(container.ask_for_credentials || container.got_cli_credentials)
 		{
 			s3.accessKeyId = container.aws_access_key_id
 			s3.secretAccessKey = container.aws_secret_access_key
