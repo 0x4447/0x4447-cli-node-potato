@@ -12,6 +12,14 @@ module.exports = function(container) {
 		get_s3_buckets(container)
 			.then(function(container) {
 
+				return query_for_bucket_policy(container);
+
+			}).then(function(container) {
+
+				return find_out_which_bucket_is_public(container);
+
+			}).then(function(container) {
+
 				return pick_a_bucket(container);
 
 			}).then(function(container) {
@@ -84,26 +92,9 @@ function get_s3_buckets(container)
 			}
 
 			//
-			//	2.	The variable that will hold all the buckets names
+			//	2.	Save the bucket names for the next chain
 			//
-			let buckets = [];
-
-			//
-			//	3.	Loop over the result and add the name to the array
-			//
-			data.Buckets.forEach(function(bucket) {
-
-				//
-				//	1.	Add the name to the array
-				//
-				buckets.push(bucket.Name);
-
-			});
-
-			//
-			//	4.	Save the bucket names for the next chain
-			//
-			container.buckets = buckets;
+			container.raw_buckets = data.Buckets;
 
 			//
 			//	-> Move to the next chain
@@ -111,6 +102,169 @@ function get_s3_buckets(container)
 			return resolve(container);
 
 		});
+	});
+}
+
+//
+//	Get the ACL for each bucket so we can later filter out and keep only
+//	buckets that are public. So we shorten the list of the buckets that we
+//	show up.
+//
+function query_for_bucket_policy(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	An array that will hold all the promises to get the ACL
+		//		for each bucket.
+		//
+		let promises = [];
+
+		//
+		//	2.	Loop over the result and add the name to the array
+		//
+		container.raw_buckets.forEach(function(bucket) {
+
+			//
+			//	1.	Add the promise to the array to be executed later with
+			//		Promise.all().
+			//
+			promises.push(
+
+				new Promise(function(resolve, reject) {
+
+					container.s3.getBucketPolicy({
+						Bucket: bucket.Name
+					}, function(error, bp) {
+
+						//
+						//	1.	Do not check for errors because if a bucket
+						//		is in a different region the AWS SDK will
+						//		throw the error, and those errors we don't
+						//		care about.
+						//
+						if (error) { }
+
+						//
+						//	2.	By default we assume there was no Policy
+						//		attached to the bucket
+						//
+						let statement = null;
+
+						//
+						//	3.	Check if the policy is in place
+						//
+						if(bp)
+						{
+							//
+							//	1.	Just save the first statement which in
+							//		this case will always have just one
+							//		object in the array. Which potato adds
+							//		to make the bucket accessible for CloudFront
+							//
+							statement = JSON.parse(bp.Policy).Statement[0]
+						}
+
+						//
+						//	->	Return the result
+						//
+						return resolve({
+							bucket_name: bucket.Name,
+							statement: statement
+						});
+
+					})
+
+				})
+
+			);
+
+		});
+
+		//
+		//	3.	Execute all the quires to AWS S3.
+		//
+		Promise.all(promises)
+		.then(function(data) {
+
+			//
+			//	->	Save the result for the next chain.
+			//
+			container.bucket_policys = data;
+
+			//
+			//	-> Move to the next chain.
+			//
+			return resolve(container);
+
+		}).catch(function(error) {
+
+			//
+			//	->	Stop the chain and surface the error.
+			//
+			return reject(error);
+
+		});
+
+	});
+}
+
+//
+//	Loop over the bucket that were enriched with Policy data and find out the
+//	public buckets, and discard the rest.
+//
+function find_out_which_bucket_is_public(container)
+{
+	return new Promise(function(resolve, reject) {
+
+		//
+		//	1.	The array that will hold only the public buckets.
+		//
+		let public_buckets = [];
+
+		//
+		//	2.	Loop over each bucket and check for the right Policy.
+		//
+		container.bucket_policys.forEach(function(data) {
+
+			//
+			//	1.	Check if we have a policy.
+			//
+			if(data.statement)
+			{
+				//
+				//	1.	Convert the strings that we care about in to boolean
+				//		values.
+				//
+				let effect 		= (data.statement.Effect 	== 'Allow') 		? true : false;
+				let principal 	= (data.statement.Principal == '*') 			? true : false;
+				let action 		= (data.statement.Action 	== 's3:GetObject') 	? true : false;
+
+				//
+				//	2.	Sum all of our boolean values and see if we got all
+				//		3 metrics that describe a public bucket.
+				//
+				if((effect + principal + action) == 3)
+				{
+					//
+					//	1.	Save he bucket for other promises to use.
+					//
+					public_buckets.push(data.bucket_name)
+				}
+			}
+
+		});
+
+		//
+		//	3.	Save the public bucket names for the next chain
+		//
+		container.buckets = public_buckets;
+
+		//
+		//	-> Move to the next chain
+		//
+		return resolve(container);
+
 	});
 }
 
@@ -182,7 +336,6 @@ function pick_a_bucket(container)
 //	.upload();
 //
 ////////////////////////////////////////////////////////////////////////////////
-
 
 //
 //	Get all the CloudFront Distributions so we can find out the ID that
