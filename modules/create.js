@@ -743,7 +743,7 @@ function check_certificate_validity(container)
 
 		term("\n");
 
-		term.yellow("\tWaiting 30 sec for Certificate to validate...");
+		term.yellow("\tWaiting 60 sec for Certificate to validate...");
 
 		//
 		//	1.	Make a variable that will keep all the information to create
@@ -765,7 +765,7 @@ function check_certificate_validity(container)
 		//		We need to do it this way because when you create a Cert
 		//		AWS will take a moment before the cert set in stone.
 		//
-		//		This main will also timeout after 15 sec.
+		//		This main will also timeout after 60 sec.
 		//
 		function main(count)
 		{
@@ -814,7 +814,7 @@ function check_certificate_validity(container)
 				//
 				//	3.	Check if we reached the limits of retries
 				//
-				if(count >= 30)
+				if(count >= 60)
 				{
 					//
 					//	1. Explain the situation
