@@ -1429,7 +1429,7 @@ function create_a_route_53_record(container)
 
 		term("\n");
 
-		term.yellow("\tCreating a new Entry...");
+		term.yellow("\tCreating a new Route 53 entry...");
 
 		//
 		//	2.	All the options to add a new record
