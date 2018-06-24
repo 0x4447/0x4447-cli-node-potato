@@ -31,11 +31,16 @@ program
 	.parse(process.argv);
 
 //
-//	Just add an empty line at the end of the help to make the text more clear
-//	to the user
+//	React when the user needs help
 //
 program.on('--help', function() {
+
+	//
+	//	Just add an empty line at the end of the help to make the text more
+	//	clear to the user
+	//
 	console.log("");
+
 });
 
 //
