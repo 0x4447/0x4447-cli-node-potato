@@ -948,12 +948,26 @@ function create_a_bucket(container)
 			//		request to the main domain and not straight to the
 			//		S3 Bucket prior to the domain propagation
 			//
-			container.bucket_url_path = container.bucket + '.s3-website-' + container.region + '.amazonaws.com';
+			container.bucket_url_path = container.bucket
+									  + '.s3-website-'
+									  + container.region
+									  + '.amazonaws.com';
 
 			//
-			//	-> Move to the next chain
+			//	3.	Before we move to the next chain we need to give AWS
+			//		a moment to finalize creating the S3 bucket. Sadly the
+			//		callback is not being triggered when the Bucket is 100%
+			//		done and if you have a fast connection you can go to
+			//		the next step faster then AWS can make a bucket.
 			//
-			return resolve(container);
+			setTimeout(function() {
+
+				//
+				//	-> Move to the next chain
+				//
+				return resolve(container);
+
+			}, 1500);
 
 		});
 
