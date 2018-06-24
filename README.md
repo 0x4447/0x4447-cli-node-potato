@@ -56,7 +56,7 @@ This process is more involved, but it will save your sanity, as well as quite a 
 - create_a_route_53_record
 - print_domain_configuration
 
-**WARNING**: What if the certificate takes too long to validate? After 30 seconds, the app will quit and print out a detailed explanation of what your next steps are. Take the time to thoroughly go over the printout, and you'll be good.
+**WARNING**: What if the certificate takes too long to validate? After 60 seconds, the app will quit and print out a detailed explanation of what your next steps are. Take the time to thoroughly go over the printout, and you'll be good.
 
 # Credentials
 
@@ -76,7 +76,7 @@ No, it's not. The following aspects don't happen right away:
 
 ### SSL Certificate Confirmation
 
-The time frame for this process ranges from 10 seconds to 24 hours. It's completely unpredictable, and there's no way to speed up the process. Because of this, the app will quit if the certificate isn't confirmed within 30 seconds. When that happens, go to the AWS Console to monitor the certificate.
+The time frame for this process ranges from 10 seconds to 24 hours. It's completely unpredictable, and there's no way to speed up the process. Because of this, the app will quit if the certificate isn't confirmed within 60 seconds. When that happens, go to the AWS Console to monitor the certificate.
 
 ### CloudFront Distribution
 
