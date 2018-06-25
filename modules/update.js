@@ -115,13 +115,25 @@ function query_for_bucket_policy(container)
 	return new Promise(function(resolve, reject) {
 
 		//
-		//	1.	An array that will hold all the promises to get the ACL
+		//	1.	Skip this view if the information was already passed in the
+		//		CLI
+		//
+		if(container.bucket)
+		{
+			//
+			//	->	Move to the next chain
+			//
+			return resolve(container);
+		}
+
+		//
+		//	2.	An array that will hold all the promises to get the ACL
 		//		for each bucket.
 		//
 		let promises = [];
 
 		//
-		//	2.	Loop over the result and add the name to the array
+		//	3.	Loop over the result and add the name to the array
 		//
 		container.raw_buckets.forEach(function(bucket) {
 
@@ -182,7 +194,7 @@ function query_for_bucket_policy(container)
 		});
 
 		//
-		//	3.	Execute all the quires to AWS S3.
+		//	4.	Execute all the quires to AWS S3.
 		//
 		Promise.all(promises)
 		.then(function(data) {
@@ -218,12 +230,24 @@ function find_out_which_bucket_is_public(container)
 	return new Promise(function(resolve, reject) {
 
 		//
-		//	1.	The array that will hold only the public buckets.
+		//	1.	Skip this view if the information was already passed in the
+		//		CLI
+		//
+		if(container.bucket)
+		{
+			//
+			//	->	Move to the next chain
+			//
+			return resolve(container);
+		}
+
+		//
+		//	2.	The array that will hold only the public buckets.
 		//
 		let public_buckets = [];
 
 		//
-		//	2.	Loop over each bucket and check for the right Policy.
+		//	3.	Loop over each bucket and check for the right Policy.
 		//
 		container.bucket_policys.forEach(function(data) {
 
@@ -256,7 +280,7 @@ function find_out_which_bucket_is_public(container)
 		});
 
 		//
-		//	3.	Save the public bucket names for the next chain
+		//	4.	Save the public bucket names for the next chain
 		//
 		container.buckets = public_buckets;
 
