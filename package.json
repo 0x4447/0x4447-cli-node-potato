@@ -1,6 +1,6 @@
 {
   "name": "@0x4447/potato",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "description": "🥔 Upload a static page to AWS S3 while automatically configuring CloudFront.",
   "homepage": "https://0x4447.com/toolbox",
   "main": "index.js",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/0x4447/0x4447-cli-potato"
+    "url": "https://github.com/0x4447/0x4447-cli-node-potato"
   },
   "bin": {
     "potato": "./index.js"
