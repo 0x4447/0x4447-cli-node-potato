@@ -1,6 +1,12 @@
 # 🥔 Potato
 
-The purpose of the Potato CLI tool is to streamline the process when you want to host a static web page on S3 and deliver it using CloudFront.
+We build this tool to cut down on time, stress and drama. Deploying a static page to S3 and Configure CloudFront, Certificate Manager and Route53 is tedious, prone to error, and there are just too many steps to remember.
+
+One my also wonder why not create a CloudFormation template, the reason for that is simple – CF dose not support fully Route53, and thus creating a certificate and updating the domain with the correct information would require a special Lambda. You can see that we can quickly end up in a complexity spiral.
+
+With Potato we can use code to overcome all the CF limitation, and configure everything in one go.
+
+While also stream lining the update process of a static site.
 
 <div align="center">
 	<img src="https://raw.githubusercontent.com/0x4447/0x4447-cli-potato/master/assets/main.png">
@@ -26,7 +32,7 @@ The purpose of the Potato CLI tool is to streamline the process when you want to
 
 # What to Expect
 
-With this CLI, you have the following options:
+With this CLI, you have the following options – update or create:
 
 ### Update
 
@@ -67,6 +73,14 @@ To use this CLI, create a programmatic user or create a role with the following 
 - AmazonRoute53FullAccess
 - AWSCertificateManagerFullAccess
 
+## How to pass the credentials
+
+When each time you run the app, Potato will do the following:
+
+1. It will check if it is running on a EC2 server, and will check if there is an attached role.
+2. If this fails, it will check if it is running inside a CodeBuld container and check for a Role.
+3. Lastly, if this two fails, the app will prompt for credentials.
+
 # Is Deployment Instant?
 
 No, it's not. The following aspects don't happen right away:
@@ -91,8 +105,8 @@ This CLI tools works well also with the following software:
 
 # The End
 
-If you enjoyed this project, please consider giving it a 🌟. And check out our [0x4447 GitHub account](https://github.com/0x4447), where we have additional resources that you might find useful or interesting.
+If you enjoyed this project, please consider giving it a 🌟. And check out our [0x4447 GitHub account](https://github.com/0x4447), where you'll find additional resources you might find useful or interesting.
 
 ## Sponsor 🎊
 
-This project is brought to you by 0x4447 LLC, a software company specializing in build custom solutions on top of AWS. Find out more by following this link: https://0x4447.com or, say [hello@0x4447.email](mailto:hello@0x4447.email?Subject=Hello%20From%20Repo&Body=Hi%2C%0A%0AMy%20name%20is%20NAME%2C%20and%20I%27d%20like%20to%20get%20in%20touch%20with%20someone%20at%200x4447.%0A%0AI%27d%20like%20to%20discuss%20the%20following%20topics%3A%0A%0A-%20LIST_OF_TOPICS_TO_DISCUSS%0A%0ASome%20useful%20information%3A%0A%0A-%20My%20full%20name%20is%3A%20FIRST_NAME%20LAST_NAME%0A-%20My%20time%20zone%20is%3A%20TIME_ZONE%0A-%20My%20working%20hours%20are%20from%3A%20TIME%20till%20TIME%0A-%20My%20company%20name%20is%3A%20COMPANY%20NAME%0A-%20My%20company%20website%20is%3A%20https%3A%2F%2F%0A%0ABest%20regards.).
+This project is brought to you by 0x4447 LLC, a software company specializing in building custom solutions on top of AWS. Follow this link to learn more: https://0x4447.com. Alternatively, send an email to [hello@0x4447.email](mailto:hello@0x4447.email?Subject=Hello%20From%20Repo&Body=Hi%2C%0A%0AMy%20name%20is%20NAME%2C%20and%20I%27d%20like%20to%20get%20in%20touch%20with%20someone%20at%200x4447.%0A%0AI%27d%20like%20to%20discuss%20the%20following%20topics%3A%0A%0A-%20LIST_OF_TOPICS_TO_DISCUSS%0A%0ASome%20useful%20information%3A%0A%0A-%20My%20full%20name%20is%3A%20FIRST_NAME%20LAST_NAME%0A-%20My%20time%20zone%20is%3A%20TIME_ZONE%0A-%20My%20working%20hours%20are%20from%3A%20TIME%20till%20TIME%0A-%20My%20company%20name%20is%3A%20COMPANY%20NAME%0A-%20My%20company%20website%20is%3A%20https%3A%2F%2F%0A%0ABest%20regards.).
