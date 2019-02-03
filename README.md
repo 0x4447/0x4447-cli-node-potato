@@ -1,46 +1,48 @@
 # 🥔 Potato
 
-We build this tool to cut down on time, stress and drama. Deploying a static page to S3 and Configure CloudFront, Certificate Manager and Route53 is tedious, prone to error, and there are just too many steps to remember.
+We built Potato to cut down on time, stress, and drama. The process of deploying a static page to S3 and configuring CloudFront, Certificate Manager, and Route53 is tedious and prone to error. It also involves too many steps to remember.
 
-One my also wonder why not create a CloudFormation template, the reason for that is simple – CF dose not support fully Route53, and thus creating a certificate and updating the domain with the correct information would require a special Lambda. You can see that we can quickly end up in a complexity spiral.
+You might wonder why we didn't create a CloudFormation template. The reason is simple: CF doesn't fully support Route53, so creating a certificate and updating the domain with the correct information would require a special Lambda. You can see that we could quickly end up in a complex spiral.
 
-With Potato we can use code to overcome all the CF limitation, and configure everything in one go.
+With Potato, we can use code to overcome all the limitations of CF and configure everything in one go.
 
-While also stream lining the update process of a static site.
+Potato also streamlines the process of updating a static site.
 
 <div align="center">
 	<img src="https://raw.githubusercontent.com/0x4447/0x4447-cli-potato/master/assets/main.png">
 </div>
 
-# How to Install
+# How to install
 
 ```
 ] sudo npm install -g @0x4447/potato
 ```
 
-# How to Use
+# How to use
 
 ```
 ] potato -s PATH_TO_FOLDER
 ```
 
-# Where to get Help
+# Where to get help
 
 ```
 ] potato -h
 ```
 
-# What to Expect
+# What to expect
 
-With this CLI, you have the following options – update or create:
+The CLI offers the following options:
 
 ### Update
 
-This option allows you to update the content of a site on S3 and automatically invalidate the CloudFront Distribution Cache. Just provide the path to the folder that contains the new content, and the CLI will automatically do the rest for you. All you have to do is follow the steps on the screen.
+This option allows you to update the content of a site on S3 and automatically invalidate the CloudFront Distribution Cache. Just provide the path to the folder containing the new content, and the CLI automatically does the rest for you. All you have to do is follow the steps on the screen.
 
 ### Create
 
-This process is more involved, but it will save your sanity, as well as quite a bit of time. When you select this option, you'll be asked for the domain name you'd like to use for your website. When you supply that information, everything else is automatic, so all you need to do is sit down and relax. The following is a list of all of the things that will happen in the background:
+This process is more involved, but it will save your sanity - and quite a bit of time. When you select this option, you'll be asked for the domain name you'd like to use for your website. Once that information is provided, everything else is automatic. At that point, all you need to do is sit down and relax.
+
+The following is a list of everything that happens in the background:
 
 - list_all_certificates
 - look_for_domain_certificate
@@ -62,7 +64,7 @@ This process is more involved, but it will save your sanity, as well as quite a 
 - create_a_route_53_record
 - print_domain_configuration
 
-**WARNING**: What if the certificate takes too long to validate? After 60 seconds, the app will quit and print out a detailed explanation of what your next steps are. Take the time to thoroughly go over the printout, and you'll be good.
+**WARNING**: What if the certificate takes too long to validate? After 60 seconds, the app quits and prints out a detailed explanation of what your next steps should be. Take the time to thoroughly go over the printout, and you'll be good.
 
 # Credentials
 
@@ -75,37 +77,37 @@ To use this CLI, create a programmatic user or create a role with the following 
 
 ## How to pass the credentials
 
-When each time you run the app, Potato will do the following:
+Each time you run Potato, it does the following:
 
-1. It will check if it is running on a EC2 server, and will check if there is an attached role.
-2. If this fails, it will check if it is running inside a CodeBuld container and check for a Role.
-3. Lastly, if this two fails, the app will prompt for credentials.
+1. Check whether it's running on an EC2 server and whether there's an attached role
+2. If this fails, it will check whether it's running inside a CodeBuld container and then check for a Role
+3. Lastly, if the first actions fail, the app prompts for credentials
 
-# Is Deployment Instant?
+# Is deployment instant?
 
 No, it's not. The following aspects don't happen right away:
 
 - SSL Certificate confirmation
 - CloudFront distribution
 
-### SSL Certificate Confirmation
+### SSL Certificate confirmation
 
-The time frame for this process ranges from 10 seconds to 24 hours. It's completely unpredictable, and there's no way to speed up the process. Because of this, the app will quit if the certificate isn't confirmed within 60 seconds. When that happens, go to the AWS Console to monitor the certificate.
+The time frame for this process ranges from 10 seconds to 24 hours. It's completely unpredictable, and there's no way to speed up the process. Because of this, the app quits if the certificate isn't confirmed within 60 seconds. When that happens, go to the AWS Console to monitor the certificate.
 
-### CloudFront Distribution
+### CloudFront distribution
 
-This takes up to 15 or 20 minutes, but when you reach this point, you can be certain that the configuration is correct. At this point, you just need to wait until the process is complete. Only then will the domain deliver the website.
+This takes up to 15 or 20 minutes, but when you reach this point, you can be certain that the configuration is correct. At this point, you just need to wait until the process is complete. Only then does the domain deliver the website.
 
-# Companion Software
+# Companion software
 
-This CLI tools works well also with the following software:
+The Potato CLI tool also works well with the following software:
 
-- [Avocado](https://www.npmjs.com/package/@0x4447/avocado): a mini framework that helps you create basic HTML websites without the complexity of modern frameworks.
-- [Strawberry](https://www.npmjs.com/package/@0x4447/strawberry): helps you create redirects supporting HTTP and HTTPS for your site.
+- [Avocado](https://www.npmjs.com/package/@0x4447/avocado): a mini-framework that enables you to create basic HTML websites without the complexity of modern frameworks
+- [Strawberry](https://www.npmjs.com/package/@0x4447/strawberry): allows you to create redirects supporting HTTP and HTTPS for your site.
 
 # The End
 
-If you enjoyed this project, please consider giving it a 🌟. And check out our [0x4447 GitHub account](https://github.com/0x4447), where you'll find additional resources you might find useful or interesting.
+If you enjoyed this project, please consider giving it a 🌟. And check out our [0x4447 GitHub account](https://github.com/0x4447), which contains additional resources you might find useful or interesting.
 
 ## Sponsor 🎊
 
