@@ -1,12 +1,10 @@
 # 🥔 Potato
 
-We built Potato to cut down on time, stress, and drama. The process of deploying a static page to S3 and configuring CloudFront, Certificate Manager, and Route53 is tedious and prone to error. It also involves too many steps to remember.
+We built Potato to cut down on time, stress, and drama. The process of deploying a static page to S3 and configuring CloudFront, Certificate Manager, and Route53 is tedious and prone to error. It also involves too many steps to remember – and so, Potato was grown.
 
 You might wonder why we didn't create a CloudFormation template. The reason is simple: CF doesn't fully support Route53, so creating a certificate and updating the domain with the correct information would require a special Lambda. You can see that we could quickly end up in a complex spiral.
 
-With Potato, we can use code to overcome all the limitations of CF and configure everything in one go.
-
-Potato also streamlines the process of updating a static site.
+With Potato, we can use code to overcome all the limitations of CF and configure everything in one go. Potato also streamlines the process of updating a static site.
 
 <div align="center">
 	<img src="https://raw.githubusercontent.com/0x4447/0x4447-cli-potato/master/assets/main.png">
@@ -81,7 +79,7 @@ Each time you run Potato, it does the following:
 
 1. Check whether it's running on an EC2 server and whether there's an attached role
 2. If this fails, it will check whether it's running inside a CodeBuld container and then check for a Role
-3. Lastly, if the first actions fail, the app prompts for credentials
+3. Lastly, if all fails, the app prompts for credentials
 
 # Is deployment instant?
 
