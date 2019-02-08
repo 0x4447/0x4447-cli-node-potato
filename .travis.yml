@@ -1,12 +1,11 @@
 language: node_js
 node_js:
-- 8
-- 7
+- 11
 script:
 - make test
 deploy:
   provider: npm
-  email: hello@0x4447.com
+  email: npm@gatti.email
   api_key:
     secure: cJF9eJ3KOF967pVgn8QceBN2cgg4OQaPdYSS2JzaCBN0n4QpcPHO8/leL3plDQgm8FHQwjXMDDGu9sfOK2G9T/JuDL7oKlHyMLkETTo6kynU9c4thOepJ1gq4rh+LSCL+4nvu+2lwZuviDVBtTRsd+Mx2E4jbeY95MMpuSQBkENXkXQLEUy2bfou4NJdj2dlRx+8wBuKO8tACOWeMDoyRnLfbi9bwiS19cF0caL485wDq4ek8kg2uHdSQ4FUeczKZ+X2hoNvHf5yPSURl+n6WIeGBh0fWTAg0DQkc4gdKQF0bDyT0Ijqt9DGR8IUMKnVfvogN9EyG8M+/S2tTcGO/42g38J0OY2a3rd1iY44aXjBU5lFvEWFpCkGNCxoynmHwj5B6tzMxMFhFwC2Nqbn3B0E9oP9CmfaHVQe3r63+SYWQL0jGn1Tf66Zll2I3i18Vkb8+/pltXq/9jzKUNdK2v/EdzzIRIvLfOkjcG26qQrbGRu3BtiGk7rmEikeF3IN4kXCwsPUkT0fCaW31W8oeGAdMlvSa10CsGV0JZsVlJOuufrYkeslGvWKfX8N0g08kZAcBD7s19QLV33Y8VPssf8vSBcrtlKa2cKZtljWZHs1eMbUaWXOjCvWwFTkXE5yjpItHGxfDkVVQEkVyLyKwKFHgN/ItzDrr4jPXfmIGlk=
   on:
